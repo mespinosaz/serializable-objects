@@ -1,0 +1,18 @@
+{
+    "name": "mespinosaz/serializable-objects",
+    "autoload": {
+        "psr-4": {"mespinosaz\\": "src/"}
+    },
+    "require": {
+        "symfony/serializer": "v2.6.1",
+        "phpunit/phpunit": "4.4.0"
+    },
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Marc Espinosa",
+            "email": "marespinosa@ebay.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}

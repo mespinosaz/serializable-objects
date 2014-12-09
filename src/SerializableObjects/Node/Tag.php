@@ -49,21 +49,30 @@ class Tag extends Node
     {
         $this->name = reset(array_keys($data));
         $data = reset($data);
-        if (is_array($data)) {
-            foreach ($data as $key => $value) {
+        if (is_string($data)) {
+            $content = new Content();
+            $contents = $data;
+        } else {
+            $contents = array();
+            foreach($data as $key => $value) {
                 if ($key[0] == '@') {
-                    $key = ltrim($key, '@');
-                    $this->setAttribute($key, $value);
+                    $this->setAttribute(ltrim($key, '@'), $value);
                 } else {
-                    $content = new Content();
-                    $content->setContent($value);
-                    $this->content = $content;
+                    $contents[$key] = $value;
                 }
             }
-        } else {
-            $content = new Content();
-            $content->setContent($data);
-            $this->content = $content;
+            if (count($contents) > 1) {
+                $content = new Composite();
+            } elseif (count($contents) == 1) {
+                if (reset(array_keys($contents)) == '#') {
+                    $content = new Content();
+                    $contents = reset($contents);
+                } else {
+                    $content = new Tag();
+                }
+            }
         }
+        $content->denormalize($denormalizer, $contents, $format, $context);
+        $this->content = $content;
     }
 }

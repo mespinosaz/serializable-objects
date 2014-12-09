@@ -116,4 +116,22 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
             '<response><key1 foo="bar">value1</key1></response>'."\n";
         $this->assertEquals($expected, $this->serializer->serialize($node, 'xml'));
     }
+
+    public function testTagInsideTag()
+    {
+        $content = new Content();
+        $content->setContent('value1');
+        $tag = new Tag();
+        $tag->setName('key2');
+        $tag->setContent($content);
+        $tag->setAttribute('dance','ok');
+        $node = new Tag();
+        $node->setName('key1');
+        $node->setContent($tag);
+        $node->setAttribute('foo','bar');
+        $expected = '<?xml version="1.0"?>'."\n".
+            '<response><key1 foo="bar"><key2 dance="ok">value1</key2></key1></response>'."\n";
+        $result = $this->serializer->serialize($node, 'xml');
+        $this->assertEquals($expected, $result);
+    }
 }

@@ -121,4 +121,22 @@ class XMLDecodeTest extends \PHPUnit_Framework_TestCase
         $result = $this->serializer->deserialize($xml, 'mespinosaz\SerializableObjects\Node\Tag', 'xml');
         $this->assertEquals($expected, $result);
     }
+
+    public function testTagInsideTag()
+    {
+        $content = new Content();
+        $content->setContent('value1');
+        $tag = new Tag();
+        $tag->setName('key2');
+        $tag->setContent($content);
+        $tag->setAttribute('dance','ok');
+        $expected = new Tag();
+        $expected->setName('key1');
+        $expected->setContent($tag);
+        $expected->setAttribute('foo','bar');
+        $xml = '<?xml version="1.0"?>'."\n".
+            '<response><key1 foo="bar"><key2 dance="ok">value1</key2></key1></response>'."\n";
+        $result = $this->serializer->deserialize($xml, 'mespinosaz\SerializableObjects\Node\Tag', 'xml');
+        $this->assertEquals($expected, $result);
+    }
 }

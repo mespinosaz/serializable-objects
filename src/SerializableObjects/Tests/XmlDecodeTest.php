@@ -134,8 +134,9 @@ class XMLDecodeTest extends \PHPUnit_Framework_TestCase
         $expected->setName('key1');
         $expected->setContent($tag);
         $expected->setAttribute('foo','bar');
+        $expected->setAttribute('foo2','bar2');
         $xml = '<?xml version="1.0"?>'."\n".
-            '<response><key1 foo="bar"><key2 dance="ok">value1</key2></key1></response>'."\n";
+            '<response><key1 foo="bar" foo2="bar2"><key2 dance="ok">value1</key2></key1></response>'."\n";
         $result = $this->serializer->deserialize($xml, 'mespinosaz\SerializableObjects\Node\Tag', 'xml');
         $this->assertEquals($expected, $result);
     }

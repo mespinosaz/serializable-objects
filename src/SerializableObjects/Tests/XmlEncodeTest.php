@@ -3,11 +3,13 @@
 namespace mespinosaz\SerializableObjects\Tests;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\CustomNormalizer;
-use mespinosaz\SerializableObjects\Node\Content;
-use mespinosaz\SerializableObjects\Node\Tag;
 use mespinosaz\SerializableObjects\Node\Composite;
+use mespinosaz\SerializableObjects\Node\Factory\ContentFactory;
+use mespinosaz\SerializableObjects\Node\Factory\TagFactory;
+
 
 class XMLEncodeTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,15 +22,15 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
                 new CustomNormalizer()
             ),
             array(
-                'xml' => new XmlEncoder()
+                'xml' => new XmlEncoder(),
+                'json' => new JsonEncoder()
             )
         );
     }
 
     public function testContent()
     {
-        $node = new Content();
-        $node->setContent('foo');
+        $node = ContentFactory::build('foo');
         $expected = '<?xml version="1.0"?>'."\n".
             '<response>foo</response>'."\n";
         $this->assertEquals($expected, $this->serializer->serialize($node, 'xml'));
@@ -36,11 +38,8 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
 
     public function testTag()
     {
-        $content = new Content();
-        $content->setContent('value1');
-        $node = new Tag();
-        $node->setName('key1');
-        $node->setContent($content);
+        $content = ContentFactory::build('value1');
+        $node = TagFactory::build('key1', $content);
         $expected = '<?xml version="1.0"?>'."\n".
             '<response><key1>value1</key1></response>'."\n";
         $this->assertEquals($expected, $this->serializer->serialize($node, 'xml'));
@@ -48,16 +47,10 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
 
     public function testComposite()
     {
-        $content1 = new Content();
-        $content1->setContent('value1');
-        $content2 = new Content();
-        $content2->setContent('value2');
-        $tag1 = new Tag();
-        $tag1->setName('key1');
-        $tag1->setContent($content1);
-        $tag2 = new Tag();
-        $tag2->setName('key2');
-        $tag2->setContent($content2);
+        $content1 = ContentFactory::build('value1');
+        $content2 = ContentFactory::build('value2');
+        $tag1 = TagFactory::build('key1', $content1);
+        $tag2 = TagFactory::build('key2', $content2);
         $node = new Composite();
         $node->add($tag1);
         $node->add($tag2);
@@ -68,32 +61,18 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
 
     public function testComplex()
     {
-        $content1 = new Content();
-        $content1->setContent('value1');
-        $content2 = new Content();
-        $content2->setContent('value2');
-        $content3 = new Content();
-        $content3->setContent('value3');
-        $content4 = new Content();
-        $content4->setContent('value4');
-        $tag1 = new Tag();
-        $tag1->setName('key1');
-        $tag1->setContent($content1);
-        $tag2 = new Tag();
-        $tag2->setName('key2');
-        $tag2->setContent($content2);
-        $tag3 = new Tag();
-        $tag3->setName('key3');
-        $tag3->setContent($content3);
-        $tag4 = new Tag();
-        $tag4->setName('key4');
-        $tag4->setContent($content4);
+        $content1 = ContentFactory::build('value1');
+        $content2 = ContentFactory::build('value2');
+        $content3 = ContentFactory::build('value3');
+        $content4 = ContentFactory::build('value4');
+        $tag1 = TagFactory::build('key1', $content1);
+        $tag2 = TagFactory::build('key2', $content2);
+        $tag3 = TagFactory::build('key3', $content3);
+        $tag4 = TagFactory::build('key4', $content4);
         $composite = new Composite();
         $composite->add($tag3);
         $composite->add($tag4);
-        $tag5 = new Tag();
-        $tag5->setName('key5');
-        $tag5->setContent($composite);
+        $tag5 = TagFactory::build('key5', $composite);
         $node = new Composite();
         $node->add($tag1);
         $node->add($tag2);
@@ -106,11 +85,8 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
 
     public function testAttributeTag()
     {
-        $content = new Content();
-        $content->setContent('value1');
-        $node = new Tag();
-        $node->setName('key1');
-        $node->setContent($content);
+        $content = ContentFactory::build('value1');
+        $node = TagFactory::build('key1', $content);
         $node->setAttribute('foo','bar');
         $expected = '<?xml version="1.0"?>'."\n".
             '<response><key1 foo="bar">value1</key1></response>'."\n";
@@ -119,15 +95,10 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
 
     public function testTagInsideTag()
     {
-        $content = new Content();
-        $content->setContent('value1');
-        $tag = new Tag();
-        $tag->setName('key2');
-        $tag->setContent($content);
+        $content = ContentFactory::build('value1');
+        $tag = TagFactory::build('key2', $content);
         $tag->setAttribute('dance','ok');
-        $node = new Tag();
-        $node->setName('key1');
-        $node->setContent($tag);
+        $node = TagFactory::build('key1', $tag);
         $node->setAttribute('foo','bar');
         $expected = '<?xml version="1.0"?>'."\n".
             '<response><key1 foo="bar"><key2 dance="ok">value1</key2></key1></response>'."\n";

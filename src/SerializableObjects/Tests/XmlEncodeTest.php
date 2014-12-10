@@ -3,7 +3,6 @@
 namespace mespinosaz\SerializableObjects\Tests;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\CustomNormalizer;
 use mespinosaz\SerializableObjects\Node\Composite;
@@ -22,9 +21,7 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
                 new CustomNormalizer()
             ),
             array(
-                'xml' => new XmlEncoder(),
-                'json' => new JsonEncoder()
-            )
+                'xml' => new XmlEncoder()            )
         );
     }
 
@@ -32,8 +29,9 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
     {
         $node = ContentFactory::build('foo');
         $expected = '<?xml version="1.0"?>'."\n".
-            '<response>foo</response>'."\n";
-        $this->assertEquals($expected, $this->serializer->serialize($node, 'xml'));
+            '<test>foo</test>'."\n";
+        $result = $this->serializer->serialize($node, 'xml',array('xml_root_node_name' => 'test'));
+        $this->assertEquals($expected, $result);
     }
 
     public function testTag()
@@ -42,7 +40,8 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
         $node = TagFactory::build('key1', $content);
         $expected = '<?xml version="1.0"?>'."\n".
             '<response><key1>value1</key1></response>'."\n";
-        $this->assertEquals($expected, $this->serializer->serialize($node, 'xml'));
+        $result = $this->serializer->serialize($node, 'xml');
+        $this->assertEquals($expected, $result);
     }
 
     public function testComposite()
@@ -56,7 +55,8 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
         $node->add($tag2);
         $expected = '<?xml version="1.0"?>'."\n".
             '<response><key1>value1</key1><key2>value2</key2></response>'."\n";
-        $this->assertEquals($expected, $this->serializer->serialize($node, 'xml'));
+        $result = $this->serializer->serialize($node, 'xml');
+        $this->assertEquals($expected, $result);
     }
 
     public function testComplex()
@@ -80,7 +80,8 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
         $expected = '<?xml version="1.0"?>'."\n".
             '<response><key1>value1</key1><key2>value2</key2>'
             .'<key5><key3>value3</key3><key4>value4</key4></key5></response>'."\n";
-        $this->assertEquals($expected, $this->serializer->serialize($node, 'xml'));
+        $result = $this->serializer->serialize($node, 'xml');
+        $this->assertEquals($expected, $result);
     }
 
     public function testAttributeTag()
@@ -90,7 +91,8 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
         $node->setAttribute('foo','bar');
         $expected = '<?xml version="1.0"?>'."\n".
             '<response><key1 foo="bar">value1</key1></response>'."\n";
-        $this->assertEquals($expected, $this->serializer->serialize($node, 'xml'));
+        $result = $this->serializer->serialize($node, 'xml');
+        $this->assertEquals($expected, $result);
     }
 
     public function testTagInsideTag()

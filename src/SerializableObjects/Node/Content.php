@@ -7,7 +7,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class Content extends Node
 {
-    private $content;
+    protected $content;
 
     /*
      *  @param string $content

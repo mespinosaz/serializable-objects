@@ -7,8 +7,8 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class Tag extends Node
 {
-    private $name;
-    private $content;
+    protected $name;
+    protected $content;
     private $attributes;
 
     public function __construct()

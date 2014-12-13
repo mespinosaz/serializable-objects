@@ -13,7 +13,6 @@ class Tag extends Node
 
     public function __construct()
     {
-        $this->key = '';
         $this->content = new NullNode();
         $this->attributes = array();
     }
@@ -49,30 +48,30 @@ class Tag extends Node
     {
         $this->name = reset(array_keys($data));
         $data = reset($data);
-        if (is_string($data)) {
-            $content = new Content();
-            $contents = $data;
-        } else {
+        $contents = $data;
+        if (is_array($data)) {
             $contents = array();
-            foreach($data as $key => $value) {
+            foreach ($data as $key => $value) {
                 if ($key[0] == '@') {
                     $this->setAttribute(ltrim($key, '@'), $value);
                 } else {
                     $contents[$key] = $value;
                 }
             }
-            if (count($contents) > 1) {
-                $content = new Composite();
-            } elseif (count($contents) == 1) {
-                if (reset(array_keys($contents)) == '#') {
-                    $content = new Content();
-                    $contents = reset($contents);
-                } else {
-                    $content = new Tag();
-                }
+            if (reset(array_keys($contents)) == '#') {
+                $contents = reset($contents);
             }
         }
-        $content->denormalize($denormalizer, $contents, $format, $context);
-        $this->content = $content;
+        if (is_string($contents)) {
+            $node = new Content();
+        } else {
+            if (count($contents) > 1) {
+                $node = new Composite();
+            } else {
+                $node = new Tag();
+            }
+        }
+        $node->denormalize($denormalizer, $contents, $format, $context);
+        $this->content = $node;
     }
 }

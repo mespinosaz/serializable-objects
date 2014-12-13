@@ -31,19 +31,9 @@ class Composite extends Node
 
     public function denormalize(DenormalizerInterface $denormalizer, $data, $format = null, array $context = null)
     {
-        foreach($data as $key => $value)
-        {
+        foreach ($data as $key => $value) {
             $tag = new Tag();
-            $tag->setName($key);
-            if (is_string($value)) {
-                $content = new Content();
-            } elseif (is_array($value) && count($value) == 1) {
-                $content = new Tag();
-            } else {
-                $content = new Composite();
-            }
-            $content->denormalize($denormalizer, $value, $format, $context);
-            $tag->setContent($content);
+            $tag->denormalize($denormalizer, array($key => $value), $format, $context);
             $this->add($tag);
         }
     }

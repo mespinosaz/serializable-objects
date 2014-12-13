@@ -9,8 +9,7 @@ use mespinosaz\SerializableObjects\Node\Composite;
 use mespinosaz\SerializableObjects\Node\Factory\ContentFactory;
 use mespinosaz\SerializableObjects\Node\Factory\TagFactory;
 
-
-class JsonEncodeTest extends \PHPUnit_Framework_TestCase
+class JsonDecodeTest extends \PHPUnit_Framework_TestCase
 {
     private $encoder;
 
@@ -28,17 +27,19 @@ class JsonEncodeTest extends \PHPUnit_Framework_TestCase
 
     public function testContent()
     {
-        $node = ContentFactory::build('foo');
-        $expected = '"foo"';
-        $this->assertEquals($expected, $this->serializer->serialize($node, 'json'));
+        $expected = ContentFactory::build('foo');
+        $json = '"foo"';
+        $result = $this->serializer->deserialize($json, 'mespinosaz\SerializableObjects\Node\Content', 'json');
+        $this->assertEquals($expected, $result);
     }
 
     public function testTag()
     {
         $content = ContentFactory::build('value1');
-        $node = TagFactory::build('key1', $content);
-        $expected = '{"key1":{"#":"value1"}}';
-        $this->assertEquals($expected, $this->serializer->serialize($node, 'json'));
+        $expected = TagFactory::build('key1', $content);
+        $json = '{"key1":{"#":"value1"}}';
+        $result = $this->serializer->deserialize($json, 'mespinosaz\SerializableObjects\Node\Tag', 'json');
+        $this->assertEquals($expected, $result);
     }
 
     public function testComposite()
@@ -47,12 +48,12 @@ class JsonEncodeTest extends \PHPUnit_Framework_TestCase
         $content2 = ContentFactory::build('value2');
         $tag1 = TagFactory::build('key1', $content1);
         $tag2 = TagFactory::build('key2', $content2);
-        $node = new Composite();
-        $node->add($tag1);
-        $node->add($tag2);
-        $expected = '{"key1":{"#":"value1"},"key2":{"#":"value2"}}';
-
-        $this->assertEquals($expected, $this->serializer->serialize($node, 'json'));
+        $expected = new Composite();
+        $expected->add($tag1);
+        $expected->add($tag2);
+        $json = '{"key1":{"#":"value1"},"key2":{"#":"value2"}}';
+        $result = $this->serializer->deserialize($json, 'mespinosaz\SerializableObjects\Node\Composite', 'json');
+        $this->assertEquals($expected, $result);
     }
 
     public function testComplex()
@@ -69,21 +70,23 @@ class JsonEncodeTest extends \PHPUnit_Framework_TestCase
         $composite->add($tag3);
         $composite->add($tag4);
         $tag5 = TagFactory::build('key5', $composite);
-        $node = new Composite();
-        $node->add($tag1);
-        $node->add($tag2);
-        $node->add($tag5);
-        $expected = '{"key1":{"#":"value1"},"key2":{"#":"value2"},"key5":{"#":{"key3":{"#":"value3"},"key4":{"#":"value4"}}}}';
-        $this->assertEquals($expected, $this->serializer->serialize($node, 'json'));
+        $expected = new Composite();
+        $expected->add($tag1);
+        $expected->add($tag2);
+        $expected->add($tag5);
+        $json = '{"key1":{"#":"value1"},"key2":{"#":"value2"},"key5":{"#":{"key3":{"#":"value3"},"key4":{"#":"value4"}}}}';
+        $result = $this->serializer->deserialize($json, 'mespinosaz\SerializableObjects\Node\Composite', 'json');
+        $this->assertEquals($expected, $result);
     }
 
     public function testAttributeTag()
     {
         $content = ContentFactory::build('value1');
-        $node = TagFactory::build('key1', $content);
-        $node->setAttribute('foo', 'bar');
-        $expected = '{"key1":{"#":"value1","@foo":"bar"}}';
-        $this->assertEquals($expected, $this->serializer->serialize($node, 'json'));
+        $expected = TagFactory::build('key1', $content);
+        $expected->setAttribute('foo', 'bar');
+        $json = '{"key1":{"#":"value1","@foo":"bar"}}';
+        $result = $this->serializer->deserialize($json, 'mespinosaz\SerializableObjects\Node\Tag', 'json');
+        $this->assertEquals($expected, $result);
     }
 
     public function testTagInsideTag()
@@ -91,11 +94,11 @@ class JsonEncodeTest extends \PHPUnit_Framework_TestCase
         $content = ContentFactory::build('value1');
         $tag = TagFactory::build('key2', $content);
         $tag->setAttribute('dance', 'ok');
-        $node = TagFactory::build('key1', $tag);
-        $node->setAttribute('foo', 'bar');
-        $node->setAttribute('foo2', 'bar2');
-        $expected = '{"key1":{"#":{"key2":{"#":"value1","@dance":"ok"}},"@foo":"bar","@foo2":"bar2"}}';
-        $result = $this->serializer->serialize($node, 'json');
+        $expected = TagFactory::build('key1', $tag);
+        $expected->setAttribute('foo', 'bar');
+        $expected->setAttribute('foo2', 'bar2');
+        $json = '{"key1":{"#":{"key2":{"#":"value1","@dance":"ok"}},"@foo":"bar","@foo2":"bar2"}}';
+        $result = $this->serializer->deserialize($json, 'mespinosaz\SerializableObjects\Node\Tag', 'json');
         $this->assertEquals($expected, $result);
     }
 }

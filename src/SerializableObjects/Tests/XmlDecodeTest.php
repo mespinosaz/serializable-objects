@@ -88,7 +88,7 @@ class XMLDecodeTest extends \PHPUnit_Framework_TestCase
     {
         $content = ContentFactory::build('value1');
         $expected = TagFactory::build('key1', $content);
-        $expected->setAttribute('foo','bar');
+        $expected->setAttribute('foo', 'bar');
         $xml = '<?xml version="1.0"?>'."\n".
             '<response><key1 foo="bar">value1</key1></response>'."\n";
         $result = $this->serializer->deserialize($xml, 'mespinosaz\SerializableObjects\Node\Tag', 'xml');
@@ -99,10 +99,10 @@ class XMLDecodeTest extends \PHPUnit_Framework_TestCase
     {
         $content = ContentFactory::build('value1');
         $tag = TagFactory::build('key2', $content);
-        $tag->setAttribute('dance','ok');
+        $tag->setAttribute('dance', 'ok');
         $expected = TagFactory::build('key1', $tag);
-        $expected->setAttribute('foo','bar');
-        $expected->setAttribute('foo2','bar2');
+        $expected->setAttribute('foo', 'bar');
+        $expected->setAttribute('foo2', 'bar2');
         $xml = '<?xml version="1.0"?>'."\n".
             '<response><key1 foo="bar" foo2="bar2"><key2 dance="ok">value1</key2></key1></response>'."\n";
         $result = $this->serializer->deserialize($xml, 'mespinosaz\SerializableObjects\Node\Tag', 'xml');

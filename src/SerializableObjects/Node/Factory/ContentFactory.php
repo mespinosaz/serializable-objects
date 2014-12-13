@@ -4,7 +4,8 @@ namespace mespinosaz\SerializableObjects\Node\Factory;
 
 use mespinosaz\SerializableObjects\Node\Content;
 
-class ContentFactory {
+class ContentFactory
+{
     public static function build($content)
     {
         $node = new Content();

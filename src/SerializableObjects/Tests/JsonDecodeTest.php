@@ -101,4 +101,18 @@ class JsonDecodeTest extends \PHPUnit_Framework_TestCase
         $result = $this->serializer->deserialize($json, 'mespinosaz\SerializableObjects\Node\Tag', 'json');
         $this->assertEquals($expected, $result);
     }
+
+    public function testTwoNodesSameName()
+    {
+        $content1 = ContentFactory::build('value1');
+        $content2 = ContentFactory::build('value2');
+        $tag1 = TagFactory::build('key1', $content1);
+        $tag2 = TagFactory::build('key1', $content2);
+        $expected = new Composite();
+        $expected->add($tag1);
+        $expected->add($tag2);
+        $json = '{"key1":["value1","value2"]}';
+        $result = $this->serializer->deserialize($json, 'mespinosaz\SerializableObjects\Node\Composite', 'json');
+        $this->assertEquals($expected, $result);
+    }
 }

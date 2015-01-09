@@ -23,18 +23,37 @@ class Composite extends Node
     {
         $content = array();
         foreach ($this->nodes as $value) {
-            $content = array_merge($content, $value->normalize($normalizer, $format, $context));
+            $value = $value->normalize($normalizer, $format, $context);
+            $keys = array_keys($value);
+            foreach ($keys as $key) {
+                if (!isset($content[$key])) {
+                    $content[$key] = $value[$key]['#'];
+                } elseif (!is_array($content[$key])) {
+                    $content[$key] = array($content[$key],$value[$key]['#']);
+                } else {
+                    $content[$key][] = $value[$key]['#'];
+                }
+            }
         }
-
         return $content;
     }
 
     public function denormalize(DenormalizerInterface $denormalizer, $data, $format = null, array $context = null)
     {
-        foreach ($data as $key => $value) {
-            $tag = new Tag();
-            $tag->denormalize($denormalizer, array($key => $value), $format, $context);
-            $this->add($tag);
+        foreach ($data as $key => $values) {
+            if (!is_array($values) || $this->isAssociativeArray($values)) {
+                $values = array($values);
+            }
+            foreach($values as $value) {
+                $tag = new Tag();
+                $tag->denormalize($denormalizer, array($key => $value), $format, $context);
+                $this->add($tag);
+            }
         }
+    }
+
+    private function isAssociativeArray(array $array)
+    {
+        return array_keys($array) !== range(0, count($array) - 1);
     }
 }

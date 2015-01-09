@@ -50,7 +50,7 @@ class JsonEncodeTest extends \PHPUnit_Framework_TestCase
         $node = new Composite();
         $node->add($tag1);
         $node->add($tag2);
-        $expected = '{"key1":{"#":"value1"},"key2":{"#":"value2"}}';
+        $expected = '{"key1":"value1","key2":"value2"}';
 
         $this->assertEquals($expected, $this->serializer->serialize($node, 'json'));
     }
@@ -73,7 +73,7 @@ class JsonEncodeTest extends \PHPUnit_Framework_TestCase
         $node->add($tag1);
         $node->add($tag2);
         $node->add($tag5);
-        $expected = '{"key1":{"#":"value1"},"key2":{"#":"value2"},"key5":{"#":{"key3":{"#":"value3"},"key4":{"#":"value4"}}}}';
+        $expected = '{"key1":"value1","key2":"value2","key5":{"key3":"value3","key4":"value4"}}';
         $this->assertEquals($expected, $this->serializer->serialize($node, 'json'));
     }
 
@@ -96,6 +96,20 @@ class JsonEncodeTest extends \PHPUnit_Framework_TestCase
         $node->setAttribute('foo2', 'bar2');
         $expected = '{"key1":{"#":{"key2":{"#":"value1","@dance":"ok"}},"@foo":"bar","@foo2":"bar2"}}';
         $result = $this->serializer->serialize($node, 'json');
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testTwoNodesSameName()
+    {
+        $content1 = ContentFactory::build('value1');
+        $content2 = ContentFactory::build('value2');
+        $tag1 = TagFactory::build('key1', $content1);
+        $tag2 = TagFactory::build('key1', $content2);
+        $node = new Composite();
+        $node->add($tag1);
+        $node->add($tag2);
+        $expected = '{"key1":["value1","value2"]}';
+        $result = $this->serializer->serialize($node,  'json');
         $this->assertEquals($expected, $result);
     }
 }

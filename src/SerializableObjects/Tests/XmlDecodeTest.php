@@ -108,4 +108,19 @@ class XMLDecodeTest extends \PHPUnit_Framework_TestCase
         $result = $this->serializer->deserialize($xml, 'mespinosaz\SerializableObjects\Node\Tag', 'xml');
         $this->assertEquals($expected, $result);
     }
+
+    public function testTwoNodesSameName()
+    {
+        $content1 = ContentFactory::build('value1');
+        $content2 = ContentFactory::build('value2');
+        $tag1 = TagFactory::build('key1', $content1);
+        $tag2 = TagFactory::build('key1', $content2);
+        $expected = new Composite();
+        $expected->add($tag1);
+        $expected->add($tag2);
+        $xml = '<?xml version="1.0"?>'."\n".
+            '<response><key1>value1</key1><key1>value2</key1></response>'."\n";
+        $result = $this->serializer->deserialize($xml, 'mespinosaz\SerializableObjects\Node\Composite', 'xml');
+        $this->assertEquals($expected, $result);
+    }
 }

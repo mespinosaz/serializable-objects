@@ -107,4 +107,19 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
         $result = $this->serializer->serialize($node, 'xml');
         $this->assertEquals($expected, $result);
     }
+
+    public function testTwoNodesSameName()
+    {
+        $content1 = ContentFactory::build('value1');
+        $content2 = ContentFactory::build('value2');
+        $tag1 = TagFactory::build('key1', $content1);
+        $tag2 = TagFactory::build('key1', $content2);
+        $node = new Composite();
+        $node->add($tag1);
+        $node->add($tag2);
+        $expected = '<?xml version="1.0"?>'."\n".
+            '<response><key1>value1</key1><key1>value2</key1></response>'."\n";
+        $result = $this->serializer->serialize($node,  'xml');
+        $this->assertEquals($expected, $result);
+    }
 }

@@ -27,12 +27,14 @@ class Composite extends Node
             $keys = array_keys($value);
             foreach ($keys as $key) {
                 if (!isset($content[$key])) {
-                    $content[$key] = $value[$key]['#'];
-                } elseif (!is_array($content[$key])) {
-                    $content[$key] = array($content[$key],$value[$key]['#']);
-                } else {
-                    $content[$key][] = $value[$key]['#'];
+                    $content[$key] = array();
                 }
+                $content[$key][] = $value[$key]['#'];
+            }
+        }
+        foreach($content as $key => $value) {
+            if (count($value) == 1) {
+                $content[$key] = reset($value);
             }
         }
         return $content;

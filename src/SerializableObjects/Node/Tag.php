@@ -46,7 +46,8 @@ class Tag extends Node
 
     public function denormalize(DenormalizerInterface $denormalizer, $data, $format = null, array $context = null)
     {
-        $this->name = reset(array_keys($data));
+        $keys = array_keys($data);
+        $this->name = reset($keys);
         $data = reset($data);
         $contents = $data;
         if (is_array($data)) {
@@ -58,7 +59,8 @@ class Tag extends Node
                     $contents[$key] = $value;
                 }
             }
-            if (reset(array_keys($contents)) == '#') {
+            $keys = array_keys($contents);
+            if (reset($keys) == '#') {
                 $contents = reset($contents);
             }
         }

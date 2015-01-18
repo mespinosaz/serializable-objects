@@ -6,6 +6,10 @@ use mespinosaz\SerializableObjects\Node\Content;
 
 class ContentFactory
 {
+    /**
+     * @param string $content
+     * @return Content
+     */
     public static function build($content)
     {
         $node = new Content();

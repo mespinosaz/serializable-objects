@@ -9,10 +9,9 @@ use mespinosaz\SerializableObjects\Node\Composite;
 use mespinosaz\SerializableObjects\Node\Factory\ContentFactory;
 use mespinosaz\SerializableObjects\Node\Factory\TagFactory;
 
-
 class XMLEncodeTest extends \PHPUnit_Framework_TestCase
 {
-    private $encoder;
+    private $serializer;
 
     protected function setUp()
     {
@@ -30,7 +29,7 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
         $node = ContentFactory::build('foo');
         $expected = '<?xml version="1.0"?>'."\n".
             '<test>foo</test>'."\n";
-        $result = $this->serializer->serialize($node, 'xml',array('xml_root_node_name' => 'test'));
+        $result = $this->serializer->serialize($node, 'xml', array('xml_root_node_name' => 'test'));
         $this->assertEquals($expected, $result);
     }
 
@@ -88,7 +87,7 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
     {
         $content = ContentFactory::build('value1');
         $node = TagFactory::build('key1', $content);
-        $node->setAttribute('foo','bar');
+        $node->setAttribute('foo', 'bar');
         $expected = '<?xml version="1.0"?>'."\n".
             '<response><key1 foo="bar">value1</key1></response>'."\n";
         $result = $this->serializer->serialize($node, 'xml');
@@ -99,9 +98,9 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
     {
         $content = ContentFactory::build('value1');
         $tag = TagFactory::build('key2', $content);
-        $tag->setAttribute('dance','ok');
+        $tag->setAttribute('dance', 'ok');
         $node = TagFactory::build('key1', $tag);
-        $node->setAttribute('foo','bar');
+        $node->setAttribute('foo', 'bar');
         $expected = '<?xml version="1.0"?>'."\n".
             '<response><key1 foo="bar"><key2 dance="ok">value1</key2></key1></response>'."\n";
         $result = $this->serializer->serialize($node, 'xml');
@@ -137,7 +136,8 @@ class XMLEncodeTest extends \PHPUnit_Framework_TestCase
         $node->add($tag1);
         $node->add($tag1);
         $expected = '<?xml version="1.0"?>'."\n".
-            '<response><key1><key2>value1</key2><key3>value2</key3></key1><key1><key2>value1</key2><key3>value2</key3></key1></response>'."\n";
+            '<response><key1><key2>value1</key2><key3>value2</key3></key1>'
+            .'<key1><key2>value1</key2><key3>value2</key3></key1></response>'."\n";
         $result = $this->serializer->serialize($node,  'xml');
         $this->assertEquals($expected, $result);
     }

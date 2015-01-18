@@ -11,7 +11,7 @@ use mespinosaz\SerializableObjects\Node\Factory\TagFactory;
 
 class XMLDecodeTest extends \PHPUnit_Framework_TestCase
 {
-    private $encoder;
+    private $serializer;
 
     protected function setUp()
     {
@@ -133,12 +133,13 @@ class XMLDecodeTest extends \PHPUnit_Framework_TestCase
         $composite = new Composite();
         $composite->add($tag2);
         $composite->add($tag3);
-        $tag1 = TagFactory::build('key1',$composite);
+        $tag1 = TagFactory::build('key1', $composite);
         $expected = new Composite();
         $expected->add($tag1);
         $expected->add($tag1);
         $xml = '<?xml version="1.0"?>'."\n".
-            '<response><key1><key2>value1</key2><key3>value2</key3></key1><key1><key2>value1</key2><key3>value2</key3></key1></response>'."\n";
+            '<response><key1><key2>value1</key2><key3>value2</key3></key1>'
+            .'<key1><key2>value1</key2><key3>value2</key3></key1></response>'."\n";
         $result = $this->serializer->deserialize($xml, 'mespinosaz\SerializableObjects\Node\Composite', 'xml');
         $this->assertEquals($expected, $result);
     }

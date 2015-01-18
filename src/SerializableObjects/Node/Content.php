@@ -17,6 +17,9 @@ class Content extends Node
         $this->content = '';
     }
 
+    /**
+     * @param string $content
+     */
     public function setContent($content)
     {
         if (!is_string($content)) {
@@ -25,11 +28,23 @@ class Content extends Node
         $this->content = $content;
     }
 
+    /**
+     * @param NormalizerInterface $normalizer
+     * @param string $format
+     * @param array $context
+     * @return string
+     */
     public function normalize(NormalizerInterface $normalizer, $format = null, array $context = null)
     {
         return $this->content;
     }
 
+    /**
+     * @param NormalizerInterface $normalizer
+     * @param string $format
+     * @param string $context
+     * @return array
+     */
     public function denormalize(DenormalizerInterface $denormalizer, $data, $format = null, array $context = null)
     {
         $this->content = $data;

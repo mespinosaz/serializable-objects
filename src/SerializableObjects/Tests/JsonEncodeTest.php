@@ -9,10 +9,9 @@ use mespinosaz\SerializableObjects\Node\Composite;
 use mespinosaz\SerializableObjects\Node\Factory\ContentFactory;
 use mespinosaz\SerializableObjects\Node\Factory\TagFactory;
 
-
 class JsonEncodeTest extends \PHPUnit_Framework_TestCase
 {
-    private $encoder;
+    private $serializer;
 
     protected function setUp()
     {
@@ -109,7 +108,7 @@ class JsonEncodeTest extends \PHPUnit_Framework_TestCase
         $node->add($tag1);
         $node->add($tag2);
         $expected = '{"key1":["value1","value2"]}';
-        $result = $this->serializer->serialize($node,  'json');
+        $result = $this->serializer->serialize($node, 'json');
         $this->assertEquals($expected, $result);
     }
 
@@ -122,12 +121,12 @@ class JsonEncodeTest extends \PHPUnit_Framework_TestCase
         $composite = new Composite();
         $composite->add($tag2);
         $composite->add($tag3);
-        $tag1 = TagFactory::build('key1',$composite);
+        $tag1 = TagFactory::build('key1', $composite);
         $node = new Composite();
         $node->add($tag1);
         $node->add($tag1);
         $expected = '{"key1":[{"key2":"value1","key3":"value2"},{"key2":"value1","key3":"value2"}]}';
-        $result = $this->serializer->serialize($node,  'json');
+        $result = $this->serializer->serialize($node, 'json');
         $this->assertEquals($expected, $result);
     }
 }

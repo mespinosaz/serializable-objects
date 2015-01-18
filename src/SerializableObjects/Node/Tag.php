@@ -17,21 +17,37 @@ class Tag extends Node
         $this->attributes = array();
     }
 
+    /**
+     * @param string $name
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
+    /**
+     * @param Node $content
+     */
     public function setContent(Node $content)
     {
         $this->content = $content;
     }
 
+    /**
+     * @param string $key
+     * @param string $value
+     */
     public function setAttribute($key, $value)
     {
         $this->attributes['@'.$key] = $value;
     }
 
+    /**
+     * @param NormalizerInterface $normalizer
+     * @param string $format
+     * @param array $context
+     * @return array
+     */
     public function normalize(NormalizerInterface $normalizer, $format = null, array $context = null)
     {
         return array(
@@ -44,6 +60,13 @@ class Tag extends Node
         );
     }
 
+    /**
+     * @param DenormalizerInterface $denormalizer
+     * @param array $data
+     * @param string $format
+     * @param array $context
+     * @return array
+     */
     public function denormalize(DenormalizerInterface $denormalizer, $data, $format = null, array $context = null)
     {
         $keys = array_keys($data);

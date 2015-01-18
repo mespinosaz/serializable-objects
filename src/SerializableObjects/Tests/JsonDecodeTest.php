@@ -11,7 +11,7 @@ use mespinosaz\SerializableObjects\Node\Factory\TagFactory;
 
 class JsonDecodeTest extends \PHPUnit_Framework_TestCase
 {
-    private $encoder;
+    private $serializer;
 
     protected function setUp()
     {
@@ -74,7 +74,8 @@ class JsonDecodeTest extends \PHPUnit_Framework_TestCase
         $expected->add($tag1);
         $expected->add($tag2);
         $expected->add($tag5);
-        $json = '{"key1":{"#":"value1"},"key2":{"#":"value2"},"key5":{"#":{"key3":{"#":"value3"},"key4":{"#":"value4"}}}}';
+        $json = '{"key1":{"#":"value1"},"key2":{"#":"value2"},'
+        .'"key5":{"#":{"key3":{"#":"value3"},"key4":{"#":"value4"}}}}';
         $result = $this->serializer->deserialize($json, 'mespinosaz\SerializableObjects\Node\Composite', 'json');
         $this->assertEquals($expected, $result);
     }
@@ -125,7 +126,7 @@ class JsonDecodeTest extends \PHPUnit_Framework_TestCase
         $composite = new Composite();
         $composite->add($tag2);
         $composite->add($tag3);
-        $tag1 = TagFactory::build('key1',$composite);
+        $tag1 = TagFactory::build('key1', $composite);
         $expected = new Composite();
         $expected->add($tag1);
         $expected->add($tag1);

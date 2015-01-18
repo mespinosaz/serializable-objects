@@ -40,9 +40,10 @@ class Content extends Node
     }
 
     /**
-     * @param NormalizerInterface $normalizer
+     * @param DenormalizerInterface $denormalizer
+     * @param string $data
      * @param string $format
-     * @param string $context
+     * @param array $context
      * @return array
      */
     public function denormalize(DenormalizerInterface $denormalizer, $data, $format = null, array $context = null)

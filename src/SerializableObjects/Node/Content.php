@@ -22,7 +22,7 @@ class Content extends Node
      */
     public function setContent($content)
     {
-        if (!is_string($content)) {
+        if (is_object($content) || is_array($content)) {
             throw new \Exception('Content should be an string!');
         }
         $this->content = $content;

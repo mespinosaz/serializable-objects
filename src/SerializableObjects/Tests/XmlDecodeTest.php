@@ -2,6 +2,7 @@
 
 namespace mespinosaz\SerializableObjects\Tests;
 
+use mespinosaz\SerializableObjects\Node\NullNode;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\CustomNormalizer;
@@ -23,6 +24,15 @@ class XMLDecodeTest extends \PHPUnit_Framework_TestCase
                 'xml' => new XmlEncoder()
             )
         );
+    }
+
+    public function testNullNode()
+    {
+        $expected = new NullNode();
+        $xml = '<?xml version="1.0"?>'."\n".
+            '<response></response>'."\n";
+        $result = $this->serializer->deserialize($xml, 'mespinosaz\SerializableObjects\Node\NullNode', 'xml');
+        $this->assertEquals($expected, $result);
     }
 
     public function testContent()

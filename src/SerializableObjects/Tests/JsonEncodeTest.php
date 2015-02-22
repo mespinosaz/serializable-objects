@@ -2,6 +2,7 @@
 
 namespace mespinosaz\SerializableObjects\Tests;
 
+use mespinosaz\SerializableObjects\Node\NullNode;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\CustomNormalizer;
@@ -23,6 +24,13 @@ class JsonEncodeTest extends \PHPUnit_Framework_TestCase
                 'json' => new JsonEncoder()
             )
         );
+    }
+
+    public function testNullNode()
+    {
+        $node = new NullNode();
+        $expected = '""';
+        $this->assertEquals($expected, $this->serializer->serialize($node, 'json'));
     }
 
     public function testContent()
